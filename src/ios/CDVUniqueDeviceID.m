@@ -12,26 +12,26 @@
 -(void)get:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^{
-        
+
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSString *uuidUserDefaults = [defaults objectForKey:@"uuid"];
-        
+
         NSString *uuid = [UICKeyChainStore stringForKey:@"uuid"];
 
         if ( uuid && !uuidUserDefaults) {
             [defaults setObject:uuid forKey:@"uuid"];
             [defaults synchronize];
-            
+
         }  else if ( !uuid && !uuidUserDefaults ) {
-            NSString *uuidString = [[NSUUID UUID] UUIDString];
-            
+            NSString *uuidString = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+
             [UICKeyChainStore setString:uuidString forKey:@"uuid"];
-            
+
             [defaults setObject:uuidString forKey:@"uuid"];
             [defaults synchronize];
-            
+
             uuid = [UICKeyChainStore stringForKey:@"uuid"];
-            
+
         } else if ( ![uuid isEqualToString:uuidUserDefaults] ) {
             [UICKeyChainStore setString:uuidUserDefaults forKey:@"uuid"];
             uuid = [UICKeyChainStore stringForKey:@"uuid"];
